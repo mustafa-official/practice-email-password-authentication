@@ -4,12 +4,30 @@ import { useState } from "react";
 
 const Register = () => {
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
+    //clean error & success
+    setError("");
+    setSuccess("");
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setError("Password should be a uppercase");
+      return;
+    } else if (!/[a-z]/.test(password)) {
+      setError("Password should be a lowercase");
+      return;
+    } else if (!/[@$!%*?&]/.test(password)) {
+      setError("Password should be a special character (@$!%*?&)");
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
+        setSuccess("User create successfully");
         console.log(result.user);
       })
       .catch((error) => {
@@ -57,6 +75,7 @@ const Register = () => {
               <button className="btn btn-primary">Register</button>
             </div>
             {error && <p className="text-red-600">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
           </form>
         </div>
       </div>
